@@ -1,24 +1,39 @@
+
 pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Hello World') {
             steps {
                 echo 'Hello World'
             }
         }
-        
-        stage('Hello NTI') {
+
+        stage('Run Script') {
             steps {
-                echo 'Hello NTI'
+                sh '''
+                    chmod +x hello.sh
+                    ./hello.sh
+                '''
             }
         }
-        
-        stage('Hello ITI') {
-            steps {
-                echo 'Hello ITI'
-            }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished (success, failure, or aborted).'
         }
 
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+
+        aborted {
+            echo 'Pipeline was aborted!'
+        }
     }
 }
