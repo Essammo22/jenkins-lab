@@ -37,6 +37,8 @@ pipeline {
         stage('Workspace Select') {
             steps {
                 sh """
+                    env | grep -i -E "TF_|workspace" || true
+                    unset TF_WORKSPACE
                     terraform workspace select ${params.ENV_NAME} || terraform workspace new ${params.ENV_NAME}
                     terraform workspace show
                 """
@@ -47,7 +49,7 @@ pipeline {
             steps {
                 script {
                     def destroyFlag = (params.ACTION == 'destroy') ? '-destroy' : ''
-                    sh "terraform plan ${destroyFlag} -input=false -var-file=${params.ENV_NAME}.tfvars -out=tfplan"
+                    sh "unset TF_WORKSPACE; terraform plan ${destroyFlag} -input=false -var-file=${params.ENV_NAME}.tfvars -out=tfplan"
                 }
             }
         }
@@ -69,7 +71,7 @@ pipeline {
                 expression { params.ACTION != 'plan' }
             }
             steps {
-                sh 'terraform apply -input=false tfplan'
+                sh 'unset TF_WORKSPACE; terraform apply -input=false tfplan'
             }
         }
     }
