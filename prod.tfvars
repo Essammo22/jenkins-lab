@@ -22,3 +22,8 @@ dns_support      = true
 availability_zone = ["us-east-1a", "us-east-1b"]
 port             = [22, 80, 0, 3306]
 instance_type    = "t2.micro"
+
+
+
+
+
