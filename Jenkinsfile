@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         choice(
-            name: 'TF_WORKSPACE',
+            name: 'ENV_NAME',
             choices: ['dev', 'stg', 'prod'],
             description: 'اختار الـ workspace'
         )
@@ -37,7 +37,7 @@ pipeline {
         stage('Workspace Select') {
             steps {
                 sh """
-                    terraform workspace select ${params.TF_WORKSPACE} || terraform workspace new ${params.TF_WORKSPACE}
+                    terraform workspace select ${params.ENV_NAME} || terraform workspace new ${params.ENV_NAME}
                     terraform workspace show
                 """
             }
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     def destroyFlag = (params.ACTION == 'destroy') ? '-destroy' : ''
-                    sh "terraform plan ${destroyFlag} -input=false -var-file=${params.TF_WORKSPACE}.tfvars -out=tfplan"
+                    sh "terraform plan ${destroyFlag} -input=false -var-file=${params.ENV_NAME}.tfvars -out=tfplan"
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
             }
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
-                    input message: "تأكيد ${params.ACTION} على ${params.TF_WORKSPACE}؟",
+                    input message: "تأكيد ${params.ACTION} على ${params.ENV_NAME}؟",
                           ok: 'Proceed'
                 }
             }
@@ -76,10 +76,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline نجح (${params.ACTION} على ${params.TF_WORKSPACE})"
+            echo "Pipeline نجح (${params.ACTION} على ${params.ENV_NAME})"
         }
         failure {
-            mail to: 'your-email@example.com',
+            mail to: 'essammostafa2222@gmail.com',
                  subject: "فشل: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "راجع اللوج: ${env.BUILD_URL}"
         }
