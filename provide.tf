@@ -8,8 +8,8 @@ provider "aws" {
   skip_metadata_api_check     = true
 
   endpoints {
-    ec2                    = "http://localhost:4566"
-    elasticloadbalancingv2 = "http://localhost:4566"
+    ec2                    = "http://host.docker.io:4566"
+    elasticloadbalancingv2 = "http://host.docker.io:4566"
 
   }
 
