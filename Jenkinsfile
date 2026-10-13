@@ -33,6 +33,11 @@ pipeline {
                 sh 'terraform init -input=false'
             }
         }
+        stage('Test Failure') {
+           steps {
+               sh 'exit 1'
+            }
+        }
 
         stage('Workspace Select') {
             steps {
